@@ -35,9 +35,12 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-const uri =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://HomeNest:GesWyORIw7WjFANb@aslampracticefirstserve.ortqfo0.mongodb.net/?appName=AslamPracticeFirstServer";
+const uri = process.env.MONGODB_URI;
+
+if (!uri) {
+  console.error("ERROR: MONGODB_URI is not defined in .env file");
+  process.exit(1);
+}
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -66,12 +69,10 @@ async function run() {
         const result = await propertiesCollection.find().toArray();
         res.send(result);
       } catch (error) {
-        res
-          .status(500)
-          .json({
-            message: "Failed to fetch properties",
-            error: error.message,
-          });
+        res.status(500).json({
+          message: "Failed to fetch properties",
+          error: error.message,
+        });
       }
     });
 
@@ -108,12 +109,10 @@ async function run() {
           .toArray();
         res.send(result);
       } catch (error) {
-        res
-          .status(500)
-          .json({
-            message: "Failed to fetch user properties",
-            error: error.message,
-          });
+        res.status(500).json({
+          message: "Failed to fetch user properties",
+          error: error.message,
+        });
       }
     });
 
@@ -121,12 +120,10 @@ async function run() {
       try {
         const newProperty = req.body;
         const result = await propertiesCollection.insertOne(newProperty);
-        res
-          .status(201)
-          .json({
-            message: "Property created successfully",
-            insertedId: result.insertedId,
-          });
+        res.status(201).json({
+          message: "Property created successfully",
+          insertedId: result.insertedId,
+        });
       } catch (error) {
         res
           .status(500)
